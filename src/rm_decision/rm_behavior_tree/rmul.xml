@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="BehaviorTree">
+    <ReactiveSequence>
+      <SubDecisionNum topic_name="decision_num"
+                      decision_num="{decision_num}"/>
+      <SubGameStatus topic_name="game_status"
+                     game_status="{game_status}"/>
+      <SubRobotStatus topic_name="robot_status"
+                      robot_status="{robot_status}"/>
+      <SubAllRobotHP topic_name="robot_hp"
+                     robot_hp="{robot_hp}"/>
+      <RunOnce then_skip="false">
+        <ModificationVariable variable_input="1"
+                              mod_num="0"
+                              variable_output="{variable_output}"/>
+      </RunOnce>
+      <DecisionSwitch message="{decision_num}">
+        <ReactiveSequence name="plan1">
+          <WhileDoElse>
+            <IsGameTime name="IsGameStart"
+                        message="{game_status}"
+                        game_progress="4"
+                        lower_remain_time="0"
+                        higher_remain_time="300"/>
+            <ReactiveSequence name="plan1">
+              <ReactiveFallback>
+                <IsStatusOK message="{robot_status}"
+                            hp_threshold="200"
+                            heat_threshold="350"/>
+                <PrintMessage message_to_print="1--go suply area"/>
+              </ReactiveFallback>
+              <ReactiveFallback>
+                <Inverter>
+                  <Sequence>
+                    <IsAttaked message="{robot_status}"/>
+                    <IsDetectEnemy message="{robot_status}"/>
+                  </Sequence>
+                </Inverter>
+                <PrintMessage message_to_print="2--find enemy and attacked"/>
+              </ReactiveFallback>
+              <ReactiveFallback>
+                <Inverter>
+                  <Sequence>
+                    <IsAttaked message="{robot_status}"/>
+                    <Inverter>
+                      <IsDetectEnemy message="{robot_status}"/>
+                    </Inverter>
+                  </Sequence>
+                </Inverter>
+                <ReactiveSequence>
+                  <PrintMessage message_to_print="2--GetCurrentLocation"/>
+                  <PrintMessage message_to_print="2--move around"/>
+                </ReactiveSequence>
+              </ReactiveFallback>
+              <ReactiveFallback>
+                <Inverter>
+                  <Sequence>
+                    <Inverter>
+                      <IsAttaked message="{robot_status}"/>
+                    </Inverter>
+                    <IsDetectEnemy message="{robot_status}"/>
+                  </Sequence>
+                </Inverter>
+                <PrintMessage message_to_print="3--find enemy"/>
+              </ReactiveFallback>
+              <ReactiveFallback>
+                <Switch2 case_1="1"
+                         case_2="2"
+                         variable="2">
+                  <ReactiveSequence name="point  1">
+                    <PrintMessage message_to_print="point11"/>
+                  </ReactiveSequence>
+                  <ReactiveSequence name="point 2">
+                    <PrintMessage message_to_print="point2"/>
+                  </ReactiveSequence>
+                  <Fallback>
+                    <PrintMessage message_to_print="err11"/>
+                  </Fallback>
+                </Switch2>
+              </ReactiveFallback>
+            </ReactiveSequence>
+            <ReactiveSequence>
+              <PrintMessage message_to_print="go home"/>
+              <RobotControl stop_gimbal_scan="True"
+                            chassis_spin_vel="0.5"/>
+            </ReactiveSequence>
+          </WhileDoElse>
+        </ReactiveSequence>
+        <ReactiveSequence name="paln2">
+          <WhileDoElse>
+            <IsGameTime name="IsGameStart"
+                        message="{game_status}"
+                        game_progress="4"
+                        lower_remain_time="0"
+                        higher_remain_time="300"/>
+            <PrintMessage message_to_print="Game start"/>
+            <ReactiveSequence>
+              <PrintMessage message_to_print="go home"/>
+              <RobotControl stop_gimbal_scan="True"
+                            chassis_spin_vel="1"/>
+            </ReactiveSequence>
+          </WhileDoElse>
+        </ReactiveSequence>
+      </DecisionSwitch>
+    </ReactiveSequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Control ID="DecisionSwitch"
+             editable="true">
+      <input_port name="message"
+                  default="{decision_num}"/>
+    </Control>
+    <Action ID="IsAttaked"
+            editable="true">
+      <input_port name="message"
+                  default="{robot_status}"/>
+    </Action>
+    <Action ID="IsDetectEnemy"
+            editable="true">
+      <input_port name="message"
+                  default="{armors}"/>
+    </Action>
+    <Action ID="IsGameTime"
+            editable="true">
+      <input_port name="message"
+                  default="{game_status}"/>
+      <input_port name="game_progress"
+                  default="4"/>
+      <input_port name="lower_remain_time"
+                  default="0"/>
+      <input_port name="higher_remain_time"
+                  default="300"/>
+    </Action>
+    <Action ID="IsStatusOK"
+            editable="true">
+      <input_port name="message"
+                  default="{robot_status}"/>
+      <input_port name="hp_threshold"
+                  default="100"/>
+      <input_port name="heat_threshold"
+                  default="350"/>
+    </Action>
+    <Action ID="ModificationVariable"
+            editable="true">
+      <input_port name="variable_input"
+                  default="variable_input"/>
+      <input_port name="mod_num"
+                  default="robot_status"/>
+      <output_port name="variable_output"
+                   default="{variable_output}"/>
+    </Action>
+    <Action ID="PrintMessage"
+            editable="true">
+      <input_port name="message_to_print"
+                  default="Hello,World!"/>
+    </Action>
+    <Action ID="RobotControl"
+            editable="true">
+      <input_port name="stop_gimbal_scan"
+                  default="True"/>
+      <input_port name="chassis_spin_vel"
+                  default="False"/>
+    </Action>
+    <Action ID="SubAllRobotHP"
+            editable="true">
+      <input_port name="topic_name"
+                  default="robot_hp"/>
+      <output_port name="robot_hp"
+                   default="{robot_hp}"/>
+    </Action>
+    <Action ID="SubDecisionNum"
+            editable="true">
+      <input_port name="topic_name"
+                  default="decision_num"/>
+      <output_port name="decision_num"
+                   default="{decision_num}"/>
+    </Action>
+    <Action ID="SubGameStatus"
+            editable="true">
+      <input_port name="topic_name"
+                  default="game_status"/>
+      <output_port name="game_status"
+                   default="{game_status}"/>
+    </Action>
+    <Action ID="SubRobotStatus"
+            editable="true">
+      <input_port name="topic_name"
+                  default="robot_status"/>
+      <output_port name="robot_status"
+                   default="{robot_status}"/>
+    </Action>
+  </TreeNodesModel>
+
+</root>
