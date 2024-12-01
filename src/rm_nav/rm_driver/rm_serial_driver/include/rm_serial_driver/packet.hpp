@@ -14,12 +14,9 @@ namespace rm_serial_driver
     struct ReceivePacket
     {
         uint8_t header = 0x55;
-        uint8_t command;   // 0-red 1-blue
-        uint8_t data_len0; // 0-auto 1-aim 2-buff
-        uint8_t data_len1;
 
         uint8_t decision_num; // decision switch
-
+        // robot hp
         uint16_t red_1_robot_hp;
         uint16_t red_2_robot_hp;
         uint16_t red_3_robot_hp;
@@ -36,10 +33,10 @@ namespace rm_serial_driver
         uint16_t blue_7_robot_hp;
         uint16_t blue_outpost_hp;
         uint16_t blue_base_hp;
-
+        // game status
         uint8_t game_progress; // 比赛进程
         uint16_t stage_remain_time;
-
+        // robot status
         uint8_t robot_id;
         uint16_t current_hp;
         uint16_t shooter_heat;
@@ -47,22 +44,18 @@ namespace rm_serial_driver
         bool is_attacked;
         bool is_detect_enemy;
 
-        uint8_t crc1;
-        uint8_t crc2;
+        uint16_t checksum;
 
     } __attribute__((packed));
 
     struct SendPacket
     {
         uint8_t header = 0x55;
-        uint8_t command = 'c';
-        uint8_t data_len0 = 9;
-        uint8_t data_len1 = 0xff - data_len0;
+
         float vx;
         float vy;
         float vz;
-        uint8_t crc1;
-        uint8_t crc2;
+        uint16_t checksum;
 
     } __attribute__((packed));
 

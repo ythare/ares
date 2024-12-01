@@ -64,28 +64,15 @@ namespace crc16
      */
     uint32_t Verify_CRC16_Check_Sum(const uint8_t *pchMessage, uint32_t dwLength)
     {
-        uint16_t check_sum = 0x6363;
-        uint8_t *data = (uint8_t *)pchMessage;
+        uint16_t w_expected = 0;
 
-        while (dwLength--)
-        {
-            uint8_t byte = *data++;
+        if ((pchMessage == nullptr) || (dwLength <= 2))
+            return false;
 
-            byte ^= (uint8_t)(check_sum & 0x00ff);
-            byte ^= byte << 4;
-
-            check_sum = (check_sum >> 8) ^ ((uint16_t)byte << 8) ^ ((uint16_t)byte << 3) ^ ((uint16_t)byte >> 4);
-        }
-        return (((check_sum >> 0) & 0xff) == data[0] && ((check_sum >> 8) & 0xff) == data[1]);
-        // uint16_t w_expected = 0;
-
-        // if ((pchMessage == nullptr) || (dwLength <= 2))
-        //     return false;
-
-        // w_expected = Get_CRC16_Check_Sum(pchMessage, dwLength - 2, CRC16_INIT);
-        // return (
-        //     (w_expected & 0xff) == pchMessage[dwLength - 2] &&
-        //     ((w_expected >> 8) & 0xff) == pchMessage[dwLength - 1]);
+        w_expected = Get_CRC16_Check_Sum(pchMessage, dwLength - 2, CRC16_INIT);
+        return (
+            (w_expected & 0xff) == pchMessage[dwLength - 2] &&
+            ((w_expected >> 8) & 0xff) == pchMessage[dwLength - 1]);
     }
 
     /**
@@ -96,27 +83,15 @@ namespace crc16
      */
     void Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength)
     {
-        unsigned short check_sum = 0x6363; // 1101111011
-        unsigned char *data = (unsigned char *)pchMessage;
-        while (dwLength--)
-        {
-            unsigned char byte = *data++;
-            byte ^= (unsigned char)(check_sum & 0x00ff);
-            byte ^= byte << 4;
-            check_sum = (check_sum >> 8) ^ ((unsigned short)byte << 8) ^ ((unsigned short)byte << 3) ^ ((unsigned short)byte >> 4);
-        }
+        uint16_t w_crc = 0;
 
-        *data++ = (check_sum >> 0) & 0x00ff; // 对应 *pchMessage
-        *data = (check_sum >> 8) & 0x00ff;
-        // uint16_t w_crc = 0;
+        if ((pchMessage == nullptr) || (dwLength <= 2))
+            return;
 
-        // if ((pchMessage == nullptr) || (dwLength <= 2))
-        //     return;
+        w_crc = Get_CRC16_Check_Sum(reinterpret_cast<uint8_t *>(pchMessage), dwLength - 2, CRC16_INIT);
 
-        // w_crc = Get_CRC16_Check_Sum(reinterpret_cast<uint8_t *>(pchMessage), dwLength - 2, CRC16_INIT);
-
-        // pchMessage[dwLength - 2] = (uint8_t)(w_crc & 0x00ff);
-        // pchMessage[dwLength - 1] = (uint8_t)((w_crc >> 8) & 0x00ff);
+        pchMessage[dwLength - 2] = (uint8_t)(w_crc & 0x00ff);
+        pchMessage[dwLength - 1] = (uint8_t)((w_crc >> 8) & 0x00ff);
     }
 
 } // namespace crc16
