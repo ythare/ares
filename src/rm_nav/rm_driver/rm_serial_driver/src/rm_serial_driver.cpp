@@ -51,7 +51,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const std::string cmd_vel_topic = declare_parameter<std::string>("cmd_vel_topic", "");
+            const std::string cmd_vel_topic = declare_parameter<std::string>("cmd_vel_topic", "/cmd_vel_chassis");
         }
         catch (rclcpp::ParameterTypeException &ex)
         {
@@ -60,7 +60,7 @@ namespace rm_serial_driver
         }
         // Create Subscription
         cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
-            cmd_vel_topic, rclcpp::QoS(rclcpp::KeepLast(1)),
+            "/cmd_vel_chassis", rclcpp::QoS(rclcpp::KeepLast(1)),
             std::bind(&RMSerialDriver::sendCtrlDate, this, std::placeholders::_1));
     }
 
@@ -111,7 +111,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const auto fc_string = declare_parameter<std::string>("flow_control", "");
+            const auto fc_string = declare_parameter<std::string>("flow_control", "none");
             if (fc_string == "none")
                 fc = FlowControl::NONE;
             else if (fc_string == "hardware")
@@ -132,7 +132,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const auto pt_string = declare_parameter<std::string>("parity", "");
+            const auto pt_string = declare_parameter<std::string>("parity", "none");
             if (pt_string == "none")
             {
                 pt = Parity::NONE;
@@ -157,7 +157,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const auto sb_string = declare_parameter<std::string>("stop_bits", "");
+            const auto sb_string = declare_parameter<std::string>("stop_bits", "1");
 
             if (sb_string == "1" || sb_string == "1.0")
             {
@@ -206,6 +206,7 @@ namespace rm_serial_driver
                         crc16::Verify_CRC16_Check_Sum(reinterpret_cast<const uint8_t *>(&packet), sizeof(packet));
                     if (crc_ok)
                     {
+                        // RCLCPP_INFO(get_logger(), "Receiveing,%d", robot_status_.is_attacked);
                         all_robot_hp_.red_1_robot_hp = packet.red_1_robot_hp;
                         all_robot_hp_.red_2_robot_hp = packet.red_2_robot_hp;
                         all_robot_hp_.red_3_robot_hp = packet.red_3_robot_hp;
@@ -253,10 +254,14 @@ namespace rm_serial_driver
     {
         try
         {
+            // RCLCPP_INFO(get_logger(), "Sending");
             SendPacket packet;
             packet.vx = msg->linear.x;
             packet.vy = msg->linear.y;
             packet.vz = msg->angular.z;
+            packet.vx = 1.5;
+            packet.vy = 2.5;
+            packet.vz = 3.5;
             crc16::Append_CRC16_Check_Sum(reinterpret_cast<uint8_t *>(&packet), sizeof(packet));
             std::vector<uint8_t> data = toVector(packet);
             serial_driver_->port()->send(data);

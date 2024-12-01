@@ -18,7 +18,8 @@ cmds=(
     nav_rviz:=True
 	"
     "
-    ros2 launch rm_serial_driver rm_serial_virtual.launch.py 
+    # ros2 launch rm_serial_driver rm_serial_virtual.launch.py 
+    ros2 launch rm_serial_driver rm_serial.launch.py 
     "
 )
 
