@@ -18,7 +18,6 @@
   <!-- depend: build, export, and execution dependency -->
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
-  <depend>serial_driver</depend>
   <depend>geometry_msgs</depend>
   <depend>tf2_ros</depend>
   <depend>tf2_geometry_msgs</depend>

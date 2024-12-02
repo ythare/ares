@@ -1,3 +1,0 @@
-/filter_pointcloud:
-  ros__parameters:
-    radius: 3.0

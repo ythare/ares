@@ -28,7 +28,7 @@ DIRECTORY src
 )
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN remove_point
+  PLUGIN FilterPointcloud
   EXECUTABLE ${PROJECT_NAME}_node
 )
 

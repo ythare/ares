@@ -1,0 +1,7 @@
+/FilterPointcloud:
+  ros__parameters:
+    livox_points_filter_message_name: /livox/lidar/pointcloud_filter
+    livox_points_message_name: /livox/lidar/pointcloud
+    odom_topic_name: /Odometry
+    thre_low: 0.4
+    thre_high: 0.4
