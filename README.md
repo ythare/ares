@@ -22,3 +22,5 @@ Based on the pb_rm_simulation[[https://github.com/LihanChen2004/pb_rm_simulation
 ## 安装依赖
 
 rosdep install -r --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
+
+a
