@@ -51,7 +51,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const std::string cmd_vel_topic = declare_parameter<std::string>("cmd_vel_topic", "/cmd_vel_chassis");
+            const std::string cmd_vel_topic = declare_parameter<std::string>("cmd_vel_topic", "");
         }
         catch (rclcpp::ParameterTypeException &ex)
         {
@@ -60,7 +60,7 @@ namespace rm_serial_driver
         }
         // Create Subscription
         cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
-            "/cmd_vel_chassis", rclcpp::QoS(rclcpp::KeepLast(1)),
+            cmd_vel_topic, rclcpp::QoS(rclcpp::KeepLast(1)),
             std::bind(&RMSerialDriver::sendCtrlDate, this, std::placeholders::_1));
     }
 
@@ -111,7 +111,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const auto fc_string = declare_parameter<std::string>("flow_control", "none");
+            const auto fc_string = declare_parameter<std::string>("flow_control", "");
             if (fc_string == "none")
                 fc = FlowControl::NONE;
             else if (fc_string == "hardware")
@@ -132,7 +132,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const auto pt_string = declare_parameter<std::string>("parity", "none");
+            const auto pt_string = declare_parameter<std::string>("parity", "");
             if (pt_string == "none")
             {
                 pt = Parity::NONE;
@@ -157,7 +157,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const auto sb_string = declare_parameter<std::string>("stop_bits", "1");
+            const auto sb_string = declare_parameter<std::string>("stop_bits", "");
 
             if (sb_string == "1" || sb_string == "1.0")
             {
