@@ -15,6 +15,7 @@ def generate_launch_description():
     rm_nav_bringup_dir = get_package_share_directory('rm_nav_bringup')
     pb_rm_simulation_launch_dir = os.path.join(get_package_share_directory('pb_rm_simulation'), 'launch')
     navigation2_launch_dir = os.path.join(get_package_share_directory('rm_navigation'), 'launch')
+    pointfilter_launch_dir = os.path.join(get_package_share_directory('filter_pointcloud'), 'launch')
 
     # Create the launch configuration variables
     world = LaunchConfiguration('world')
@@ -298,6 +299,9 @@ def generate_launch_description():
             {'use_sim_time': use_sim_time,}
         ],
     )
+    start_point_filter = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pointfilter_launch_dir,'filter_pointcloud.launch.py')),
+    )
 
     start_navigation2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(navigation2_launch_dir, 'bringup_rm_navigation.py')),
@@ -340,6 +344,7 @@ def generate_launch_description():
     ld.add_action(start_localization_group)
     ld.add_action(bringup_fake_vel_transform_node)
     ld.add_action(start_mapping)
+    ld.add_action(start_point_filter)
     ld.add_action(start_navigation2)
     # ld.add_action(start_pid_follow)
 
