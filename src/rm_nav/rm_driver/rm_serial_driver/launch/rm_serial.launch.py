@@ -15,6 +15,7 @@ def generate_launch_description():
         namespace='',
         output='screen',
         emulate_tty=True,
+        respawn=True,
         parameters=[config,
                     {'use_sim_time': False}],
     )

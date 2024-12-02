@@ -8,7 +8,8 @@ def generate_launch_description():
         Node(
             package='rm_serial_driver',  # 替换为你的包名
             executable='virtual_serial_node',  # 替换为你的可执行文件名
-            output='screen'
+            output='screen',
+            respawn=True,
         ),
         # 启动 rqt 并加载参数插件
         ExecuteProcess(
