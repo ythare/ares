@@ -16,6 +16,7 @@ def generate_launch_description():
     pb_rm_simulation_launch_dir = os.path.join(get_package_share_directory('pb_rm_simulation'), 'launch')
     navigation2_launch_dir = os.path.join(get_package_share_directory('rm_navigation'), 'launch')
     pointfilter_launch_dir = os.path.join(get_package_share_directory('filter_pointcloud'), 'launch')
+    gicp_launch_dir = os.path.join(get_package_share_directory('small_gicp_relocalization'), 'launch')
 
     # Create the launch configuration variables
     world = LaunchConfiguration('world')
@@ -277,6 +278,14 @@ def generate_launch_description():
                     'container_name': 'nav2_container'}.items())
         ]
     )
+    start_map_server = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(navigation2_launch_dir, 'map_server_launch.py')),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'map': nav2_map_dir,
+            'params_file': nav2_params_file_dir,
+            'container_name': 'nav2_container'}.items()
+        )
 
     bringup_fake_vel_transform_node = Node(
         package='fake_vel_transform',
@@ -303,6 +312,10 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(pointfilter_launch_dir,'filter_pointcloud.launch.py')),
     )
 
+    start_gicp = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(gicp_launch_dir,'small_gicp_relocalization_launch.py')),
+    )
+
     start_navigation2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(navigation2_launch_dir, 'bringup_rm_navigation.py')),
         launch_arguments={
@@ -311,19 +324,19 @@ def generate_launch_description():
             'params_file': nav2_params_file_dir,
             'nav_rviz': use_nav_rviz}.items()
     )
-    # start_pid_follow = Node(
-    #     package='pid_follow',
-    #     executable='pid_follow_node',
-    #     output='screen',
-    #     parameters=[{
-    #         'use_sim_time': use_sim_time,
-    #         'max_x_speed': 1.0 ,
-    #         'max_y_speed': 1.0 ,
-    #         'p_value': 4.0 ,
-    #         'plan_frequency': 50 ,
-    #         'goal_dist_tolerance': 0.3
-    #     }]
-    # )
+    start_pid_follow = Node(
+        package='pid_follow',
+        executable='pid_follow_node',
+        output='screen',
+        parameters=[{
+            'use_sim_time': use_sim_time,
+            'max_x_speed': 1.0 ,
+            'max_y_speed': 1.0 ,
+            'p_value': 4.0 ,
+            'plan_frequency': 50 ,
+            'goal_dist_tolerance': 0.3
+        }]
+    )
 
     ld = LaunchDescription()
 
@@ -341,10 +354,12 @@ def generate_launch_description():
     ld.add_action(bringup_linefit_ground_segmentation_node)
     ld.add_action(bringup_pointcloud_to_laserscan_node)
     ld.add_action(bringup_LIO_group)
-    ld.add_action(start_localization_group)
-    ld.add_action(bringup_fake_vel_transform_node)
     ld.add_action(start_mapping)
+    ld.add_action(start_localization_group) # 1
+    ld.add_action(bringup_fake_vel_transform_node)
+    # ld.add_action(start_map_server)   #2
     ld.add_action(start_point_filter)
+    # ld.add_action(start_gicp)         #2
     ld.add_action(start_navigation2)
     # ld.add_action(start_pid_follow)
 

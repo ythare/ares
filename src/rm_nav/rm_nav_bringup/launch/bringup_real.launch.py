@@ -350,6 +350,19 @@ def generate_launch_description():
             'nav_rviz': use_nav_rviz}.items()
     )
 
+    start_gicp = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(gicp_launch_dir,'small_gicp_relocalization_launch.py')),
+    )
+
+    start_map_server = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(navigation2_launch_dir, 'map_server_launch.py')),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'map': nav2_map_dir,
+            'params_file': nav2_params_file_dir,
+            'container_name': 'nav2_container'}.items()
+        )
+
 
 
     ld = LaunchDescription()
@@ -369,7 +382,10 @@ def generate_launch_description():
     ld.add_action(bringup_linefit_ground_segmentation_node)
     ld.add_action(bringup_pointcloud_to_laserscan_node)
     ld.add_action(bringup_LIO_group)
-    ld.add_action(start_localization_group)
+    ld.add_action(start_localization_group)  #1
+    # ld.add_action(start_map_server)   #2
+    # ld.add_action(start_gicp)    
+
     ld.add_action(bringup_fake_vel_transform_node)
     ld.add_action(start_mapping)
     ld.add_action(start_point_filter)
