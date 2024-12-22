@@ -51,7 +51,7 @@ namespace rm_serial_driver
         }
         try
         {
-            const std::string cmd_vel_topic = declare_parameter<std::string>("cmd_vel_topic", "");
+            const std::string cmd_vel_topic = declare_parameter<std::string>("cmd_vel_topic", "/cmd_vel_chassis");
         }
         catch (rclcpp::ParameterTypeException &ex)
         {
@@ -60,7 +60,7 @@ namespace rm_serial_driver
         }
         // Create Subscription
         cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
-            cmd_vel_topic, rclcpp::QoS(rclcpp::KeepLast(1)),
+            "/cmd_vel_chassis", rclcpp::QoS(rclcpp::KeepLast(1)),
             std::bind(&RMSerialDriver::sendCtrlDate, this, std::placeholders::_1));
     }
 
@@ -259,9 +259,9 @@ namespace rm_serial_driver
             packet.vx = msg->linear.x;
             packet.vy = msg->linear.y;
             packet.vz = msg->angular.z;
-            packet.vx = 1.5;
-            packet.vy = 2.5;
-            packet.vz = 3.5;
+            // packet.vx = 1.5;
+            // packet.vy = 2.5;
+            // packet.vz = 3.5;
             crc16::Append_CRC16_Check_Sum(reinterpret_cast<uint8_t *>(&packet), sizeof(packet));
             std::vector<uint8_t> data = toVector(packet);
             serial_driver_->port()->send(data);

@@ -74,7 +74,7 @@ namespace fake_vel_transform
       double angle_diff = -current_angle_;
 
       geometry_msgs::msg::Twist aft_tf_vel;
-      aft_tf_vel.angular.z = (msg->angular.z != 0) ? spin_speed_ : 0;
+      aft_tf_vel.angular.z = (msg->angular.z != 0) ;//? spin_speed_ : 0;
       aft_tf_vel.linear.x = msg->linear.x * cos(angle_diff) + msg->linear.y * sin(angle_diff);
       aft_tf_vel.linear.y = -msg->linear.x * sin(angle_diff) + msg->linear.y * cos(angle_diff);
 

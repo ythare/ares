@@ -139,13 +139,13 @@ def generate_launch_description():
     )
 
     # Specify the actions
-    start_livox_ros_driver2_node = Node(
-        package='livox_ros_driver2',
-        executable='livox_ros_driver2_node',
-        name='livox_lidar_publisher',
-        output='screen',
-        parameters=livox_ros2_params
-    )
+    # start_livox_ros_driver2_node = Node(
+    #     package='livox_ros_driver2',
+    #     executable='livox_ros_driver2_node',
+    #     name='livox_lidar_publisher',
+    #     output='screen',
+    #     parameters=livox_ros2_params
+    # )
 
     bringup_imu_complementary_filter_node = Node(
         package='imu_complementary_filter',
@@ -322,7 +322,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'use_sim_time': use_sim_time,
-            'spin_speed': 0.0 # rad/s
+            'spin_speed': 3.0 # rad/s
         }]
     )
 
@@ -350,9 +350,9 @@ def generate_launch_description():
             'nav_rviz': use_nav_rviz}.items()
     )
 
-    start_gicp = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(gicp_launch_dir,'small_gicp_relocalization_launch.py')),
-    )
+    # start_gicp = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(os.path.join(gicp_launch_dir,'small_gicp_relocalization_launch.py')),
+    # )
 
     start_map_server = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(navigation2_launch_dir, 'map_server_launch.py')),
@@ -377,7 +377,7 @@ def generate_launch_description():
     ld.add_action(declare_LIO_cmd)
     
     ld.add_action(start_robot_state_publisher_cmd)
-    ld.add_action(start_livox_ros_driver2_node)
+    # ld.add_action(start_livox_ros_driver2_node)
     ld.add_action(bringup_imu_complementary_filter_node)
     ld.add_action(bringup_linefit_ground_segmentation_node)
     ld.add_action(bringup_pointcloud_to_laserscan_node)
