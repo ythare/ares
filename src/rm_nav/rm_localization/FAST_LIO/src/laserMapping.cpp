@@ -526,7 +526,7 @@ void publish_frame_world(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::Share
         pcl::toROSMsg(*laserCloudWorld, laserCloudmsg);
         // laserCloudmsg.header.stamp = ros::Time().fromSec(lidar_end_time);
         laserCloudmsg.header.stamp = get_ros_time(lidar_end_time);
-        laserCloudmsg.header.frame_id = "odom";
+        laserCloudmsg.header.frame_id = "lidar_odom";
         pubLaserCloudFull->publish(laserCloudmsg);
         publish_count -= PUBFRAME_PERIOD;
     }
@@ -534,7 +534,7 @@ void publish_frame_world(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::Share
     /**************** save map ****************/
     /* 1. make sure you have enough memories
     /* 2. noted that pcd save will influence the real-time performences **/
-
+    /*
     if (pcd_save_en)
     {
         int size = feats_undistort->points.size();
@@ -561,6 +561,7 @@ void publish_frame_world(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::Share
             scan_wait_num = 0;
         }
     }
+    */
 }
 
 void publish_frame_body(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubLaserCloudFull_body)
@@ -594,7 +595,7 @@ void publish_effect_world(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::Shar
     sensor_msgs::msg::PointCloud2 laserCloudFullRes3;
     pcl::toROSMsg(*laserCloudWorld, laserCloudFullRes3);
     laserCloudFullRes3.header.stamp = get_ros_time(lidar_end_time);
-    laserCloudFullRes3.header.frame_id = "odom";
+    laserCloudFullRes3.header.frame_id = "lidar_odom";
     pubLaserCloudEffect->publish(laserCloudFullRes3);
 }
 
@@ -615,7 +616,7 @@ void publish_map(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub
     sensor_msgs::msg::PointCloud2 laserCloudmsg;
     pcl::toROSMsg(*pcl_wait_pub, laserCloudmsg);
     laserCloudmsg.header.stamp = get_ros_time(lidar_end_time);
-    laserCloudmsg.header.frame_id = "odom";
+    laserCloudmsg.header.frame_id = "lidar_odom";
     pubLaserCloudMap->publish(laserCloudmsg);
 }
 
@@ -642,7 +643,7 @@ void publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPt
                       std::unique_ptr<tf2_ros::Buffer> &tf_buffer_,
                       rclcpp::Logger logger_)
 {
-    odomAftMapped.header.frame_id = "odom";
+    odomAftMapped.header.frame_id = "lidar_odom";
     odomAftMapped.child_frame_id = "livox_frame";
     odomAftMapped.header.stamp = get_ros_time(lidar_end_time);
     set_posestamp(odomAftMapped.pose);
@@ -680,7 +681,7 @@ void publish_odometry(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPt
     // Create a TransformStamped message for lidar_odom to base_link
     geometry_msgs::msg::TransformStamped transform_stamped;
     transform_stamped.header.stamp = odomAftMapped.header.stamp;
-    transform_stamped.header.frame_id = "odom";     // Source frame
+    transform_stamped.header.frame_id = "lidar_odom";     // Source frame
     transform_stamped.child_frame_id = "base_link"; // Target frame
 
     // Calculate the transform from lidar_odom to base_link by multiplying the transforms
@@ -702,7 +703,7 @@ void publish_path(rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr pubPath)
 {
     set_posestamp(msg_body_pose);
     msg_body_pose.header.stamp = get_ros_time(lidar_end_time); // ros::Time().fromSec(lidar_end_time);
-    msg_body_pose.header.frame_id = "odom";
+    msg_body_pose.header.frame_id = "lidar_odom";
 
     /*** if path is too large, the rvis will crash ***/
     // static int jjj = 0;
@@ -916,7 +917,7 @@ public:
         RCLCPP_INFO(this->get_logger(), "p_pre->lidar_type %d", p_pre->lidar_type);
 
         path.header.stamp = this->get_clock()->now();
-        path.header.frame_id = "odom";
+        path.header.frame_id = "lidar_odom";
 
         // /*** variables definition ***/
         // int effect_feat_num = 0, frame_num = 0;
