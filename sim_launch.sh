@@ -17,6 +17,6 @@ cmds=(
 for cmd in "${cmds[@]}"
 do
 	echo Current CMD : "$cmd"
-	gnome-terminal -- bash -c "source /home/ythare/ares/install/setup.bash;$cmd;exec bash;"
+	gnome-terminal -- bash -c "source ./install/setup.bash;$cmd;exec bash;"
 	sleep 0.2
 done

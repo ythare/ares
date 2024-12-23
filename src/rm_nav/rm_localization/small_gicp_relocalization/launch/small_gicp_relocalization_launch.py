@@ -28,7 +28,7 @@ def generate_launch_description():
                 "odom_frame": "odom",
                 "base_frame": "base_link",
                 "lidar_frame": "livox_frame",
-                "prior_pcd_file": "/home/ythare/ares/src/rm_nav/rm_nav_bringup/PCD/RMUL.pcd",
+                "prior_pcd_file": "./src/rm_nav/rm_nav_bringup/PCD/RMUL.pcd",
             }
         ],
     )

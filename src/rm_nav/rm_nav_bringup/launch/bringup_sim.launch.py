@@ -163,12 +163,12 @@ def generate_launch_description():
             executable="static_transform_publisher",
             arguments=[
                 # Useless arguments, provided by LIO in publish_odometry() function
-                # '--x', '0.0',
-                # '--y', '0.0',
-                # '--z', '0.0',
-                # '--roll', '0.0',
-                # '--pitch', '0.0',
-                # '--yaw', '0.0',
+                '--x', '0.0',
+                '--y', '0.0',
+                '--z', '0.0',
+                '--roll', '0.0',
+                '--pitch', '0.0',
+                '--yaw', '0.0',
                 '--frame-id', 'odom',
                 '--child-frame-id', 'lidar_odom'
             ],
@@ -355,11 +355,11 @@ def generate_launch_description():
     ld.add_action(bringup_pointcloud_to_laserscan_node)
     ld.add_action(bringup_LIO_group)
     ld.add_action(start_mapping)
-    ld.add_action(start_localization_group) # 1
+    # ld.add_action(start_localization_group) # 1
     ld.add_action(bringup_fake_vel_transform_node)
-    # ld.add_action(start_map_server)   #2
+    ld.add_action(start_map_server)   #2
     ld.add_action(start_point_filter)
-    # ld.add_action(start_gicp)         #2
+    ld.add_action(start_gicp)         #2
     ld.add_action(start_navigation2)
     # ld.add_action(start_pid_follow)
 
